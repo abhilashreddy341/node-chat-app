@@ -15,14 +15,14 @@ var io = socketIO(server);
 io.on('connection',(socket)=>{
   console.log("New user connected");
 
-  socket.emit('newconnection',generateMessage('admin','Welcome to new chat app'));
+  socket.emit('newMessage',generateMessage('admin','Welcome to new chat app'));
 
-  socket.broadcast.emit('newconnection',generateMessage('admin','New user Joined'));
+  socket.broadcast.emit('newMessage',generateMessage('admin','New user Joined'));
 
-  socket.on('createMessage',(message)=>{
+  socket.on('createMessage',(message,callback)=>{
     console.log('createMessage',message);
     io.emit('newMessage',generateMessage(message.from,message.text));
-
+     callback('This is from server');
     // socket.broadcast.emit('newMessage',{
     //   from : message.from,
     //   text : message.text,
