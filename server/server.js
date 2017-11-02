@@ -16,14 +16,16 @@ var io = socketIO(server);
 io.on('connection',(socket)=>{
   console.log("New user connected");
 
-  socket.emit('newMessage',generateMessage('admin','Welcome to new chat app'));
-
-  socket.broadcast.emit('newMessage',generateMessage('admin','New user Joined'));
-
   socket.on('join',(params,callback)=>{
     if(!isStringValid(params.name)&&!isStringValid(params.room)){
       callback('enter valid name and room name');
     }
+    socket.join(params.room);
+
+    socket.emit('newMessage',generateMessage('admin','Welcome to new chat app'));
+
+    socket.broadcast.to(params.room).emit('newMessage',generateMessage('admin',`${params.name} has joined`));
+
     callback();
   })
 
