@@ -4,6 +4,7 @@ const http = require('http');
 const socketIO = require('socket.io');
 
 const {generateMessage,generateLocationMessage} = require('./utils/message');
+const {isStringValid} = require('./utils/validation');
 const publicPath = path.join(__dirname,'../public');
 
 const port = process.env.PORT||3000;
@@ -18,6 +19,13 @@ io.on('connection',(socket)=>{
   socket.emit('newMessage',generateMessage('admin','Welcome to new chat app'));
 
   socket.broadcast.emit('newMessage',generateMessage('admin','New user Joined'));
+
+  socket.on('join',(params,callback)=>{
+    if(!isStringValid(params.name)&&!isStringValid(params.room)){
+      callback('enter valid name and room name');
+    }
+    callback();
+  })
 
   socket.on('createMessage',(message,callback)=>{
     console.log('createMessage',message);
